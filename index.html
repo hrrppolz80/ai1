@@ -1,0 +1,115 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+const questions = [
+  {
+    q: "데이트를 할 때 나는?",
+    options: [
+      { text: "계획을 철저히 세운다", type: "planner" },
+      { text: "즉흥적으로 즐긴다", type: "free" },
+    ],
+  },
+  {
+    q: "연락 스타일은?",
+    options: [
+      { text: "자주 한다", type: "affection" },
+      { text: "필요할 때만", type: "independent" },
+    ],
+  },
+  {
+    q: "갈등이 생기면?",
+    options: [
+      { text: "바로 해결하려 한다", type: "direct" },
+      { text: "시간을 두고 생각한다", type: "calm" },
+    ],
+  },
+  {
+    q: "이상적인 연애는?",
+    options: [
+      { text: "안정적이고 편안한 관계", type: "stable" },
+      { text: "설레고 자극적인 관계", type: "exciting" },
+    ],
+  },
+  {
+    q: "애정 표현은?",
+    options: [
+      { text: "말과 행동으로 적극 표현", type: "affection" },
+      { text: "은근히 표현", type: "calm" },
+    ],
+  },
+];
+
+const results = {
+  planner: "계획형 연애 스타일 💡",
+  free: "자유로운 연애 스타일 🌿",
+  affection: "표현형 연애 스타일 ❤️",
+  independent: "독립적인 연애 스타일 🧊",
+  direct: "직진형 연애 스타일 🔥",
+  calm: "신중한 연애 스타일 🌙",
+  stable: "안정 추구형 🏡",
+  exciting: "자극 추구형 ⚡",
+};
+
+const match = {
+  planner: "자유로운 스타일과 궁합이 좋아요",
+  free: "계획형 스타일과 궁합이 좋아요",
+  affection: "독립형과 균형이 좋아요",
+  independent: "표현형과 잘 맞아요",
+  direct: "신중형과 궁합이 좋아요",
+  calm: "직진형과 잘 맞아요",
+  stable: "자극형과 균형이 좋아요",
+  exciting: "안정형과 잘 맞아요",
+};
+
+export default function LoveStyleApp() {
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState([]);
+
+  const handleAnswer = (type) => {
+    setAnswers([...answers, type]);
+    setStep(step + 1);
+  };
+
+  const getResult = () => {
+    const count = {};
+    answers.forEach((a) => {
+      count[a] = (count[a] || 0) + 1;
+    });
+    return Object.keys(count).reduce((a, b) => (count[a] > count[b] ? a : b));
+  };
+
+  if (step >= questions.length) {
+    const resultType = getResult();
+    return (
+      <div className="flex items-center justify-center h-screen bg-black text-white">
+        <Card className="p-6 text-center">
+          <CardContent>
+            <h1 className="text-2xl mb-4">결과 🎉</h1>
+            <p className="text-xl">{results[resultType]}</p>
+            <p className="mt-2">👉 {match[resultType]}</p>
+            <Button className="mt-4" onClick={() => {
+              setStep(0);
+              setAnswers([]);
+            }}>다시하기</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <Card className="p-6 w-96">
+        <CardContent>
+          <h2 className="text-lg mb-4">{questions[step].q}</h2>
+          {questions[step].options.map((opt, i) => (
+            <Button key={i} className="w-full mb-2" onClick={() => handleAnswer(opt.type)}>
+              {opt.text}
+            </Button>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
